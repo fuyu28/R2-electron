@@ -1,34 +1,22 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
-import './assets/tailwind.css'
+import { useState } from 'react'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [path, setPath] = useState<string[]>([])
+
+  const handleOpen = async (): Promise<void> => {
+    const result = await window.api.fileDialog.openFile()
+    setPath(result)
+  }
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
+      <h1>File Open Test</h1>
+      <button onClick={handleOpen}>Open</button>
+      <ul className="list-disc pl-5">
+        {path.map((p) => (
+          <li key={p}>{p}</li>
+        ))}
+      </ul>
     </>
   )
 }
