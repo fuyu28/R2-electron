@@ -2,10 +2,12 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-import { fileDialogAPI } from './api/fileDialog'
+import { fileDialogAPI } from './api/fileDialogPreload'
+import { uploadAPI } from './api/uploadPreload'
 
 const api = {
-  fileDialog: fileDialogAPI
+  fileDialog: fileDialogAPI,
+  upload: uploadAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

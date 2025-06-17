@@ -1,7 +1,13 @@
 export interface FileDialogAPI {
-  openFile(): Promise<string[]>
+  selectExe(): Promise<string | null>
+  selectFolder(): Promise<string | null>
+}
+
+export interface UploadAPI {
+  uploadFolder(folderPath: string): Promise<{ success: boolean }>
 }
 
 export interface API {
   fileDialog: FileDialogAPI
+  upload: UploadAPI
 }

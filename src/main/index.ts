@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { registerFileDialogHandler } from './ipcHandlers/fileDialog'
+import { registerAllHandlers } from './registerHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,7 +51,7 @@ app.whenReady().then(() => {
   })
 
   // Handler
-  registerFileDialogHandler()
+  registerAllHandlers()
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
