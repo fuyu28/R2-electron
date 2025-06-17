@@ -5,9 +5,3 @@ export interface FileDialogAPI {
 export interface API {
   fileDialog: FileDialogAPI
 }
-
-declare global {
-  interface Window {
-    api: API
-  }
-}
