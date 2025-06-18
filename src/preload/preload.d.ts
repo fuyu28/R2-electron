@@ -4,15 +4,20 @@ export interface FileDialogAPI {
 }
 
 export interface UploadAPI {
-  uploadFolder(localFolderPath: string, R2DestinationPath: string): Promise<{ success: boolean }>
+  uploadFolder(localFolderPath: string, r2DestinationPath: string): Promise<{ success: boolean }>
 }
 
-export interface EnvAPI {
-  getEnv(envName: string): Promise<string | null>
+export interface GetR2ListAPI {
+  getR2FolderList(): Promise<string[] | null>
+}
+
+export interface DownloadAPI {
+  downloadFolder(localFolderPath: string, r2DestinationPath: string): Promise<{ success: boolean }>
 }
 
 export interface API {
   fileDialog: FileDialogAPI
   upload: UploadAPI
-  env: EnvAPI
+  getR2FolderList: GetR2ListAPI
+  download: DownloadAPI
 }

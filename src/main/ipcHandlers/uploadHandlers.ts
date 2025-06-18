@@ -2,7 +2,7 @@ import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { ipcMain } from 'electron'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { R2Client } from '../R2Client'
+import { r2Client } from '../r2Client'
 
 export function registerUploadHandlers(): void {
   ipcMain.handle(
@@ -10,7 +10,7 @@ export function registerUploadHandlers(): void {
     async (
       _event,
       localFolderPath: string,
-      R2DestinationPath: string
+      r2DestinationPath: string
     ): Promise<{ success: boolean }> => {
       try {
         const files = await readdir(localFolderPath)
@@ -20,10 +20,10 @@ export function registerUploadHandlers(): void {
 
           const cmd = new PutObjectCommand({
             Bucket: process.env.BUCKET_NAME,
-            Key: `${R2DestinationPath}/${file}`,
+            Key: `${r2DestinationPath}/${file}`,
             Body: fileBody
           })
-          await R2Client.send(cmd)
+          await r2Client.send(cmd)
         }
         return { success: true }
       } catch (err) {
