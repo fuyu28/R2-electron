@@ -84,7 +84,6 @@ export default function DownloadPage(): React.JSX.Element {
       <h1 className="text-2xl font-bold text-center">Download (R2 Directory)</h1>
 
       {loading && <p className="text-center">Loading…</p>}
-      {error && <p className="text-error text-center">❌ {error}</p>}
 
       {/* R2側フォルダ選択リスト */}
       {!loading && !error && (
