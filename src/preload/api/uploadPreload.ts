@@ -1,6 +1,9 @@
 import { ipcRenderer } from 'electron'
 
 export const uploadAPI = {
-  uploadFolder: (folderPath: string): Promise<{ success: boolean }> =>
-    ipcRenderer.invoke('upload-folder', folderPath)
+  uploadFolder: (
+    localFolderPath: string,
+    R2DestinationPath: string
+  ): Promise<{ success: boolean }> =>
+    ipcRenderer.invoke('upload-folder', localFolderPath, R2DestinationPath)
 }
