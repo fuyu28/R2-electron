@@ -5,11 +5,13 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { fileDialogAPI } from './api/fileDialogPreload'
 import { uploadAPI } from './api/uploadPreload'
 import { getR2FolderListAPI } from './api/r2ListPreload'
+import { downloadAPI } from './api/downloadPreload'
 
 const api = {
   fileDialog: fileDialogAPI,
   upload: uploadAPI,
-  getR2FolderList: getR2FolderListAPI
+  getR2FolderList: getR2FolderListAPI,
+  download: downloadAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

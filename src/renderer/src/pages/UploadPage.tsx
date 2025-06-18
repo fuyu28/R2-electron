@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 export default function UploadPage(): React.JSX.Element {
   const [localFolderPath, setLocalFolderPath] = useState<string | null>(null)
-  const [R2DestinationPath, setR2DestinationPath] = useState<string | null>(null)
+  const [r2DestinationPath, setR2DestinationPath] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -22,12 +22,12 @@ export default function UploadPage(): React.JSX.Element {
   const handleUpload = async (): Promise<void> => {
     setError(null)
     setSuccess(null)
-    if (!localFolderPath || !R2DestinationPath) return
+    if (!localFolderPath || !r2DestinationPath) return
     setLoading(true)
     try {
-      const result = await window.api.upload.uploadFolder(localFolderPath, R2DestinationPath)
+      const result = await window.api.upload.uploadFolder(localFolderPath, r2DestinationPath)
       if (result.success) setSuccess('アップロードが完了しました🎉')
-      else setError('アップロードに失敗しました😢')
+      else setError('アップロードに失敗しました')
     } catch {
       setError('予期せぬエラーが発生しました')
     } finally {
@@ -60,7 +60,7 @@ export default function UploadPage(): React.JSX.Element {
         </label>
         <input
           type="text"
-          value={R2DestinationPath ?? ''}
+          value={r2DestinationPath ?? ''}
           onChange={(e) => setR2DestinationPath(e.target.value === '' ? null : e.target.value)}
           className="input input-bordered w-full"
         />
@@ -80,8 +80,8 @@ export default function UploadPage(): React.JSX.Element {
       <div className="form-control w-full">
         <button
           onClick={handleUpload}
-          disabled={!R2DestinationPath || loading}
-          className={`btn w-full ${!R2DestinationPath || loading ? 'btn-disabled' : 'btn-primary'}`}
+          disabled={!r2DestinationPath || loading}
+          className={`btn w-full ${!r2DestinationPath || loading ? 'btn-disabled' : 'btn-primary'}`}
         >
           {loading ? 'Uploading…' : 'Upload'}
         </button>

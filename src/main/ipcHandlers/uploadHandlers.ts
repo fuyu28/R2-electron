@@ -10,7 +10,7 @@ export function registerUploadHandlers(): void {
     async (
       _event,
       localFolderPath: string,
-      R2DestinationPath: string
+      r2DestinationPath: string
     ): Promise<{ success: boolean }> => {
       try {
         const files = await readdir(localFolderPath)
@@ -20,7 +20,7 @@ export function registerUploadHandlers(): void {
 
           const cmd = new PutObjectCommand({
             Bucket: process.env.BUCKET_NAME,
-            Key: `${R2DestinationPath}/${file}`,
+            Key: `${r2DestinationPath}/${file}`,
             Body: fileBody
           })
           await r2Client.send(cmd)
