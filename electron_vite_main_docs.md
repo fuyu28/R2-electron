@@ -20,7 +20,7 @@ src/main
 ├── registerHandlers.ts
 └── ipcHandlers
     ├── fileDialogHandlers.ts
-    ├── getR2ListHandler.ts
+    ├── getR2FolderListHandler.ts
     └── uploadHandlers.ts
 ```
 
@@ -48,7 +48,7 @@ src/main
 - **処理**: `select-exe`, `select-folder` チャンネルの `ipcMain.handle`。
 - **利用**: ローカルパス入力をUIで促す時。
 
-#### 1.5 `ipcHandlers/getR2ListHandler.ts`
+#### 1.5 `ipcHandlers/getR2FolderListHandler.ts`
 
 - **役割**: R2バケットのフォルダ一覧取得。
 - **処理**: `ListObjectsV2Command` でプレフィックス（`Delimiter: '/'`）を取得。
@@ -186,10 +186,10 @@ src/types
   ```ts
   declare namespace NodeJS {
     interface ProcessEnv {
-      readonly BUCKET_NAME: string;
-      readonly ENDPOINT: string;
-      readonly ACCESS_KEY_ID: string;
-      readonly SECRET_ACCESS_KEY: string;
+      readonly BUCKET_NAME: string
+      readonly ENDPOINT: string
+      readonly ACCESS_KEY_ID: string
+      readonly SECRET_ACCESS_KEY: string
     }
   }
   ```
@@ -198,4 +198,3 @@ src/types
 ---
 
 > 次のステップ: 共通 Hooks / 状態管理（Zustand など）の導入計画や、大規模化時のディレクトリ整理パターンを検討します。
-

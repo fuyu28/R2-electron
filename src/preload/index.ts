@@ -4,10 +4,12 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 import { fileDialogAPI } from './api/fileDialogPreload'
 import { uploadAPI } from './api/uploadPreload'
+import { getR2FolderListAPI } from './api/r2ListPreload'
 
 const api = {
   fileDialog: fileDialogAPI,
-  upload: uploadAPI
+  upload: uploadAPI,
+  getR2FolderList: getR2FolderListAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
