@@ -2,7 +2,7 @@ import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { ipcMain } from 'electron'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { R2Client } from '../R2Client'
+import { r2Client } from '../r2Client'
 
 export function registerUploadHandlers(): void {
   ipcMain.handle(
@@ -23,7 +23,7 @@ export function registerUploadHandlers(): void {
             Key: `${R2DestinationPath}/${file}`,
             Body: fileBody
           })
-          await R2Client.send(cmd)
+          await r2Client.send(cmd)
         }
         return { success: true }
       } catch (err) {
