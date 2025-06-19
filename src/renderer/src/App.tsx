@@ -3,8 +3,11 @@ import AboutPage from './pages/AboutPage'
 import UploadPage from './pages/UploadPage'
 import DownloadPage from './pages/DownloadPage'
 import SettingsPage from './pages/SettingsPage'
+import { useHasCreds } from './hooks/useHasCreds'
 
 function App(): React.JSX.Element {
+  const hasCreds = useHasCreds()
+
   return (
     <div className="min-h-screen bg-base-100">
       <nav className="p-4 bg-base-200 flex space-x-4">
@@ -19,7 +22,7 @@ function App(): React.JSX.Element {
         <NavLink
           to="/upload"
           className={({ isActive }) =>
-            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}`
+            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'} ${!hasCreds ? 'opacity-50 pointer-events-none' : ''}`
           }
         >
           Upload
@@ -27,7 +30,7 @@ function App(): React.JSX.Element {
         <NavLink
           to="/download"
           className={({ isActive }) =>
-            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}`
+            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}  ${!hasCreds ? 'opacity-50 pointer-events-none' : ''}`
           }
         >
           Download
@@ -45,8 +48,8 @@ function App(): React.JSX.Element {
         <Routes>
           <Route path="/" element={<AboutPage />} />
           <Route path="/upload" element={<UploadPage />} />
-          <Route path="/download" element={<DownloadPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          {hasCreds && <Route path="/download" element={<DownloadPage />} />}
+          {hasCreds && <Route path="/settings" element={<SettingsPage />} />}
         </Routes>
       </main>
     </div>
