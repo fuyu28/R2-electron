@@ -11,7 +11,7 @@ export default function AboutPage(): React.JSX.Element {
           <ul className="list-disc pl-5 mt-4 space-y-2">
             <li>Cloudflareのアカウントを作成</li>
             <li>R2の登録をする</li>
-            <li>Settingページでクレデンシャルを張る</li>
+            <li>Settingページでクレデンシャルの設定をする</li>
           </ul>
         </div>
       </div>

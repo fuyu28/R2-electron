@@ -1,11 +1,19 @@
 import { S3Client } from '@aws-sdk/client-s3'
-import 'dotenv/config'
+import { getCredential } from './service/credentialService'
 
-export const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: process.env.ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY
+export async function createR2Client(): Promise<S3Client> {
+  const creds = await getCredential()
+
+  if (!creds) {
+    throw new Error('R2/S3 のクレデンシャルが設定されていません')
   }
-})
+  const r2Client = new S3Client({
+    region: creds.region,
+    endpoint: creds.endpoint,
+    credentials: {
+      accessKeyId: creds.accessKeyId,
+      secretAccessKey: creds.secretAccessKey
+    }
+  })
+  return r2Client
+}
