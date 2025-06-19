@@ -2,6 +2,7 @@ import { NavLink, Routes, Route } from 'react-router-dom'
 import AboutPage from './pages/AboutPage'
 import UploadPage from './pages/UploadPage'
 import DownloadPage from './pages/DownloadPage'
+import SettingsPage from './pages/SettingsPage'
 
 function App(): React.JSX.Element {
   return (
@@ -31,12 +32,21 @@ function App(): React.JSX.Element {
         >
           Download
         </NavLink>
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}`
+          }
+        >
+          Settings
+        </NavLink>
       </nav>
       <main className="p-6">
         <Routes>
           <Route path="/" element={<AboutPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/download" element={<DownloadPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
     </div>
