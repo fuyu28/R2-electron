@@ -3,10 +3,10 @@ import AboutPage from './pages/AboutPage'
 import UploadPage from './pages/UploadPage'
 import DownloadPage from './pages/DownloadPage'
 import SettingsPage from './pages/SettingsPage'
-import { useHasCreds } from './hooks/useHasCreds'
+import { useCredentials } from './context/CredentialsContext'
 
 function App(): React.JSX.Element {
-  const hasCreds = useHasCreds()
+  const { hasValidCreds } = useCredentials()
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -22,7 +22,7 @@ function App(): React.JSX.Element {
         <NavLink
           to="/upload"
           className={({ isActive }) =>
-            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'} ${!hasCreds ? 'opacity-50 pointer-events-none' : ''}`
+            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'} ${!hasValidCreds ? 'opacity-50 pointer-events-none' : ''}`
           }
         >
           Upload
@@ -30,7 +30,7 @@ function App(): React.JSX.Element {
         <NavLink
           to="/download"
           className={({ isActive }) =>
-            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}  ${!hasCreds ? 'opacity-50 pointer-events-none' : ''}`
+            `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}  ${!hasValidCreds ? 'opacity-50 pointer-events-none' : ''}`
           }
         >
           Download
@@ -47,9 +47,9 @@ function App(): React.JSX.Element {
       <main className="p-6">
         <Routes>
           <Route path="/" element={<AboutPage />} />
-          <Route path="/upload" element={<UploadPage />} />
-          {hasCreds && <Route path="/download" element={<DownloadPage />} />}
-          {hasCreds && <Route path="/settings" element={<SettingsPage />} />}
+          {hasValidCreds && <Route path="/upload" element={<UploadPage />} />}
+          {hasValidCreds && <Route path="/download" element={<DownloadPage />} />}
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
     </div>

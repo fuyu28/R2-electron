@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
+import { useCredentials } from '@renderer/context/CredentialsContext'
 
 export default function SettingsPage(): React.JSX.Element {
   const [bucketName, setBucketName] = useState('')
   const [endpoint, setEndpoint] = useState('')
   const [region, setRegion] = useState('')
   const [accessKeyId, setAccessKeyId] = useState('')
-  const [secretAccessKey, setSecretKeyId] = useState('')
+  const [secretAccessKey, setSecretAccessKey] = useState('')
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+
+  const { creds, reloadCreds } = useCredentials()
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null
@@ -20,18 +23,18 @@ export default function SettingsPage(): React.JSX.Element {
 
   useEffect(() => {
     ;(async () => {
-      const creds = await window.api.credential.getCredential()
-      if (creds !== null) {
+      if (creds) {
         setBucketName(creds.bucketName)
         setEndpoint(creds.endpoint)
         setRegion(creds.region)
         setAccessKeyId(creds.accessKeyId)
-        setSecretKeyId(creds.secretAccessKey)
+        setSecretAccessKey(creds.secretAccessKey)
       }
     })()
-  }, [])
+  }, [creds])
 
   const saveAll = async (): Promise<void> => {
+    setToast(null)
     const res = await window.api.credential.setCredential({
       bucketName,
       endpoint,
@@ -40,7 +43,12 @@ export default function SettingsPage(): React.JSX.Element {
       secretAccessKey
     })
     if (res.success) {
-      setToast({ message: 'クレデンシャルの保存に成功しました', type: 'success' })
+      const isValid = await reloadCreds()
+      if (isValid) {
+        setToast({ message: 'クレデンシャルの保存に成功しました', type: 'success' })
+      } else {
+        setToast({ message: '誤ったクレデンシャルが指定されています', type: 'error' })
+      }
     } else {
       setToast({ message: 'クレデンシャルの保存に失敗しました', type: 'error' })
     }
@@ -111,7 +119,7 @@ export default function SettingsPage(): React.JSX.Element {
                 type="password"
                 className="input input-bordered flex-1"
                 value={secretAccessKey}
-                onChange={(e) => setSecretKeyId(e.target.value)}
+                onChange={(e) => setSecretAccessKey(e.target.value)}
                 placeholder="シークレットアクセスキーを入力"
               />
             </div>

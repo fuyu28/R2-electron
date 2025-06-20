@@ -8,3 +8,10 @@ export interface Schema {
 export interface Creds extends Schema {
   secretAccessKey: string
 }
+
+export interface CredsContextType {
+  hasValidCreds: boolean
+  creds: Creds | null
+  setHasValidCreds: (v: boolean) => void
+  reloadCreds: () => Promise<boolean>
+}
