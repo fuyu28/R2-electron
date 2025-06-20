@@ -5,10 +5,19 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [
+      // 依存関係を外部化する中で electron-store だけ除外
+      externalizeDepsPlugin({
+        exclude: ['electron-store']
+      })
+    ]
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [
+      externalizeDepsPlugin({
+        exclude: ['electron-store']
+      })
+    ]
   },
   renderer: {
     resolve: {
@@ -16,6 +25,10 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react(), tailwindcss()]
+    plugins: [react(), tailwindcss()],
+    optimizeDeps: {
+      // dev モードのバンドルに electron-store を含める
+      include: ['electron-store']
+    }
   }
 })
