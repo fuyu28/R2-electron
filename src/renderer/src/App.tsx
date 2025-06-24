@@ -1,5 +1,5 @@
 import { NavLink, Routes, Route } from 'react-router-dom'
-import AboutPage from './pages/AboutPage'
+import StatusPage from './pages/StatusPage'
 import UploadPage from './pages/UploadPage'
 import DownloadPage from './pages/DownloadPage'
 import SettingsPage from './pages/SettingsPage'
@@ -46,7 +46,7 @@ function App(): React.JSX.Element {
       </nav>
       <main className="p-6">
         <Routes>
-          <Route path="/" element={<AboutPage />} />
+          <Route path="/" element={<StatusPage />} />
           {hasValidCreds && <Route path="/upload" element={<UploadPage />} />}
           {hasValidCreds && <Route path="/download" element={<DownloadPage />} />}
           <Route path="/settings" element={<SettingsPage />} />
