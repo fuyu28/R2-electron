@@ -1,4 +1,5 @@
 import type { Creds } from '../types/creds'
+import { AwsSdkError } from '../types/error'
 
 export interface FileDialogAPI {
   selectExe(): Promise<string | null>
@@ -20,6 +21,7 @@ export interface DownloadAPI {
 export interface CredentialAPI {
   setCredential(creds: Creds): Promise<{ success: boolean }>
   getCredential(): Promise<Creds | null>
+  testCredential(creds: Creds): Promise<{ success: boolean; err?: AwsSdkError }>
 }
 
 export interface API {

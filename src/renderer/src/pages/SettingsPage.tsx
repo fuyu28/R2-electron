@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCredentials } from '@renderer/context/CredentialsContext'
+import { AwsSdkError } from 'src/types/error'
 
 export default function SettingsPage(): React.JSX.Element {
   const [bucketName, setBucketName] = useState('')
@@ -11,30 +12,50 @@ export default function SettingsPage(): React.JSX.Element {
 
   const { creds, reloadCreds } = useCredentials()
 
+  // Toast の自動クリア
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null
-    if (toast) {
-      timer = setTimeout(() => setToast(null), 3000)
-    }
-    return () => {
-      if (timer) clearTimeout(timer)
-    }
+    if (!toast) return
+    const timer = setTimeout(() => setToast(null), 3000)
+    return () => clearTimeout(timer)
   }, [toast])
 
+  // 初回ロード時に既存 creds を反映
   useEffect(() => {
-    ;(async () => {
-      if (creds) {
-        setBucketName(creds.bucketName)
-        setEndpoint(creds.endpoint)
-        setRegion(creds.region)
-        setAccessKeyId(creds.accessKeyId)
-        setSecretAccessKey(creds.secretAccessKey)
-      }
-    })()
+    if (creds) {
+      setBucketName(creds.bucketName)
+      setEndpoint(creds.endpoint)
+      setRegion(creds.region)
+      setAccessKeyId(creds.accessKeyId)
+      setSecretAccessKey(creds.secretAccessKey)
+    }
   }, [creds])
 
-  const saveAll = async (): Promise<void> => {
+  /** 入力された設定で疎通確認を行う関数 */
+  const testConnection = async (): Promise<{ success: boolean; err?: AwsSdkError }> => {
+    const res = await window.api.credential.testCredential({
+      bucketName,
+      endpoint,
+      region,
+      accessKeyId,
+      secretAccessKey
+    })
+    if (res.success) return { success: true }
+    else return { success: false, err: res.err }
+  }
+
+  /** 保存ボタンハンドラ */
+  const handleSave = async (): Promise<void> => {
     setToast(null)
+
+    // 1) まず疎通確認
+    setToast({ message: '接続確認中…', type: 'success' })
+    const test = await testConnection()
+    if (!test.success) {
+      setToast({ message: `${test.err?.Code}\n${test.err?.message}`, type: 'error' })
+      return
+    }
+
+    // 2) 接続 OK ならストレージへ書き込み
     const res = await window.api.credential.setCredential({
       bucketName,
       endpoint,
@@ -43,12 +64,8 @@ export default function SettingsPage(): React.JSX.Element {
       secretAccessKey
     })
     if (res.success) {
-      const isValid = await reloadCreds()
-      if (isValid) {
-        setToast({ message: 'クレデンシャルの保存に成功しました', type: 'success' })
-      } else {
-        setToast({ message: '誤ったクレデンシャルが指定されています', type: 'error' })
-      }
+      await reloadCreds()
+      setToast({ message: 'クレデンシャルの保存に成功しました', type: 'success' })
     } else {
       setToast({ message: 'クレデンシャルの保存に失敗しました', type: 'error' })
     }
@@ -56,21 +73,19 @@ export default function SettingsPage(): React.JSX.Element {
 
   return (
     <div className="relative container mx-auto px-6 mt-10">
-      {/* Toast */}
       {toast && (
         <div
           className={`fixed top-4 right-4 z-50 alert shadow-lg ${
             toast.type === 'success' ? 'alert-success' : 'alert-error'
           } animate-fade-in-down`}
         >
-          <span>{toast.message}</span>
+          <span className="whitespace-pre-line">{toast.message}</span>
         </div>
       )}
 
       <div className="card w-full bg-base-100 shadow-lg">
         <div className="card-body">
           <h2 className="card-title mb-4">R2/S3 設定</h2>
-
           <div className="flex flex-col space-y-4">
             {/* ラベルの幅を固定し、入力欄を揃えるレイアウト */}
             <div className="flex items-center">
@@ -124,9 +139,8 @@ export default function SettingsPage(): React.JSX.Element {
               />
             </div>
           </div>
-
           <div className="form-control mt-6 flex justify-end">
-            <button className="btn btn-primary" onClick={saveAll}>
+            <button className="btn btn-primary" onClick={handleSave}>
               保存
             </button>
           </div>
