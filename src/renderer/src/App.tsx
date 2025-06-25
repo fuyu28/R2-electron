@@ -17,7 +17,7 @@ function App(): React.JSX.Element {
             `px-4 py-2 rounded ${isActive ? 'btn btn-primary' : 'btn btn-ghost'}`
           }
         >
-          About
+          Status
         </NavLink>
         <NavLink
           to="/upload"

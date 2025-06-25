@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { FaCheck, FaSyncAlt, FaTimes } from 'react-icons/fa'
 import { useCredentials } from '@renderer/context/CredentialsContext'
 
 type Status = 'loading' | 'success' | 'error'
@@ -10,7 +11,6 @@ export default function StatusPage(): React.JSX.Element {
   const { hasValidCreds, creds } = useCredentials()
 
   useEffect(() => {
-    // クレデンシャルの状態が変化したらステータス更新
     if (hasValidCreds) {
       setStatus('success')
     } else {
@@ -20,55 +20,31 @@ export default function StatusPage(): React.JSX.Element {
   }, [hasValidCreds])
 
   return (
-    <div className="flex-1 bg-base-200 flex items-center justify-center p-4">
-      <div className="card w-full max-w-md shadow-xl bg-base-100">
+    <div className="flex justify-center p-4 bg-base-200 w-full mx-auto">
+      <div className="card bg-base-100 w-full shadow-xl">
         <div className="card-body text-center">
-          <h2 className="card-title justify-center">ステータス確認</h2>
+          <h2 className="card-title">現在のステータス</h2>
 
           {status === 'loading' && (
             <div className="flex flex-col items-center space-y-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <FaSyncAlt className="animate-spin text-4xl text-gray-600" />
               <span>接続を確認中...</span>
             </div>
           )}
 
           {status === 'success' && (
             <div className="alert alert-success">
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current flex-shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span>{creds?.bucketName} とのコネクションに成功しました！</span>
+              <div className="flex space-x-2">
+                <FaCheck className="text-xl" />
+                <span>バケット名 : {creds?.bucketName} に接続中</span>
               </div>
             </div>
           )}
 
           {status === 'error' && (
             <div className="alert alert-error">
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current flex-shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+              <div className="flex space-x-2">
+                <FaTimes className="text-xl" />
                 <span>R2と接続できませんでした: {errorMessage}</span>
               </div>
             </div>
