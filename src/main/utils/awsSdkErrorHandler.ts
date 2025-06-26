@@ -15,19 +15,29 @@ export function handleAwsSdkError(error: unknown): AwsSdkError {
   if (error instanceof S3ServiceException) {
     switch (err.Code) {
       case 'NoSuchBucket':
-        return { Code: err.Code, message: 'バケットが存在しません' }
+        return { Code: err.Code, message: 'バケットが存在しません。' }
       case 'InvalidRegionName':
-        return { Code: err.Code, message: 'リージョン名が正しくありません' }
+        return { Code: err.Code, message: 'リージョン名が正しくありません。' }
       case 'InvalidArgument':
-        return { Code: err.Code, message: 'アクセスキーIDが正しくありません' }
+        return { Code: err.Code, message: 'アクセスキーIDが正しくありません。' }
       case 'SignatureDoesNotMatch':
-        return { Code: err.Code, message: '認証情報が正しくありません' }
+        return { Code: err.Code, message: '認証情報が正しくありません。' }
       default:
-        return { Code: err.Code, message: 'その他のエラーです' }
+        if (err.Code !== undefined) return { Code: err.Code, message: 'その他のエラーです。' }
+        else {
+          console.error(err)
+          return { Code: err.Code, message: 'その他のエラーです。' }
+        }
     }
   } else {
-    if (err.Code === 'ENOTFOUND')
-      return { Code: err.Code, message: 'エンドポイントが正しくありません' }
-    else return { Code: err.Code, message: 'その他のエラーです' }
+    if (err.code === 'ENOTFOUND')
+      return {
+        Code: err.code,
+        message: 'ネットワークエラーです。エンドポイントとネットワークの接続を確認してください。'
+      }
+    else {
+      console.error(err)
+      return { Code: err.code, message: 'その他のエラーです。' }
+    }
   }
 }

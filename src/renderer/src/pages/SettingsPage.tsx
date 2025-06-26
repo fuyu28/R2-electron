@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useCredentials } from '@renderer/context/CredentialsContext'
 import { AwsSdkError } from 'src/types/error'
+import { isValidR2OrS3Endpoint } from '@renderer/utils/endpointValidator'
 
 export default function SettingsPage(): React.JSX.Element {
   const [bucketName, setBucketName] = useState('')
@@ -32,6 +33,11 @@ export default function SettingsPage(): React.JSX.Element {
 
   /** 入力された設定で疎通確認を行う関数 */
   const testConnection = async (): Promise<{ success: boolean; err?: AwsSdkError }> => {
+    if (!isValidR2OrS3Endpoint(endpoint))
+      return {
+        success: false,
+        err: { Code: 'InvalidEndpoint', message: 'エンドポイントのURLが不正な形式です。' }
+      }
     const res = await window.api.credential.testCredential({
       bucketName,
       endpoint,
@@ -65,9 +71,9 @@ export default function SettingsPage(): React.JSX.Element {
     })
     if (res.success) {
       await reloadCreds()
-      setToast({ message: 'クレデンシャルの保存に成功しました', type: 'success' })
+      setToast({ message: '設定の保存に成功しました', type: 'success' })
     } else {
-      setToast({ message: 'クレデンシャルの保存に失敗しました', type: 'error' })
+      setToast({ message: '設定の保存に失敗しました', type: 'error' })
     }
   }
 
@@ -87,7 +93,6 @@ export default function SettingsPage(): React.JSX.Element {
         <div className="card-body">
           <h2 className="card-title mb-4">R2/S3 設定</h2>
           <div className="flex flex-col space-y-4">
-            {/* ラベルの幅を固定し、入力欄を揃えるレイアウト */}
             <div className="flex items-center">
               <span className="w-36 text-sm font-medium">Bucket Name</span>
               <input
