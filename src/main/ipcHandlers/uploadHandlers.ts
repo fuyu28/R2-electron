@@ -2,7 +2,8 @@ import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { ipcMain } from 'electron'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { r2Client } from '../r2Client'
+import { createR2Client } from '../r2Client'
+import { getCredential } from '../service/credentialService'
 
 export function registerUploadHandlers(): void {
   ipcMain.handle(
@@ -13,13 +14,18 @@ export function registerUploadHandlers(): void {
       r2DestinationPath: string
     ): Promise<{ success: boolean }> => {
       try {
+        const r2Client = await createR2Client()
+        const creds = await getCredential()
+        if (!creds) {
+          throw new Error('R2/S3 クレデンシャルが設定されていません')
+        }
         const files = await readdir(localFolderPath)
         for (const file of files) {
           const fullPath = join(localFolderPath, file)
           const fileBody = await readFile(fullPath)
 
           const cmd = new PutObjectCommand({
-            Bucket: process.env.BUCKET_NAME,
+            Bucket: creds.bucketName,
             Key: `${r2DestinationPath}/${file}`,
             Body: fileBody
           })

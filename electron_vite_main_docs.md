@@ -20,7 +20,7 @@ src/main
 ├── registerHandlers.ts
 └── ipcHandlers
     ├── fileDialogHandlers.ts
-    ├── getR2FolderListHandler.ts
+    ├── registerGetR2FolderListHandler.ts
     └── uploadHandlers.ts
 ```
 
@@ -48,7 +48,7 @@ src/main
 - **処理**: `select-exe`, `select-folder` チャンネルの `ipcMain.handle`。
 - **利用**: ローカルパス入力をUIで促す時。
 
-#### 1.5 `ipcHandlers/getR2FolderListHandler.ts`
+#### 1.5 `ipcHandlers/registerGetR2FolderListHandler.ts`
 
 - **役割**: R2バケットのフォルダ一覧取得。
 - **処理**: `ListObjectsV2Command` でプレフィックス（`Delimiter: '/'`）を取得。
